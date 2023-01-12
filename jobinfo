@@ -255,21 +255,20 @@ def main(jobid):
             print "%-20s: %s" % (desc, format(val, meta))
             
         # Add the content to the output tsv file
-        header_accumulator += "\t" + desc
-        record_accumulator += "\t" + format(val, meta)
+        header_accumulator +=  desc + "\t"
+        #record_accumulator += "\t" + format(val, meta)
+	record_accumulator += str(val) + "\t"
         
     # Check if the file exists, in which case the header should be written
-    tsvfile_path = "somefile.tsv"
+    # tsvfile_path = "somefile.tsv"
+    tsvfile_path = "jobinfo_log_" + str(jobid) + ".tsv"
     tsvfile_exists = os.path.isfile(tsvfile_path)
        
-    print "record that will be written:"
-    print record_accumulator
     with open(tsvfile_path, "a+") as tsvfile: # a+ means append and create if it doesn't exist.
         if not tsvfile_exists:
-            tsvfile.write(header_accumulator)
-        tsvfile.write(record_accumulator)
+            tsvfile.write(header_accumulator[:-1] + "\n")
+        tsvfile.write(record_accumulator[:-1] + "\n") # :-1 means remove the last tab symbol 
         
-    print "probably successfully printed to the output tsv file."
         
             
     
