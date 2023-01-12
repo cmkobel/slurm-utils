@@ -245,11 +245,34 @@ def main(jobid):
         reason = ""
     y = combine(ys)
     meta = Meta._make(y + [dependencies, reason])
-
+    
+    header_accumulator = ""
+    record_accumulator = ""
+    
     for i,(name,parse,comb,show,prefer_sstat,format,desc) in enumerate(FIELDS):
         val = y[i]
         if show:
             print "%-20s: %s" % (desc, format(val, meta))
+            
+        # Add the content to the output tsv file
+        header_accumulator += "\t" + desc
+        record_accumulator += "\t" + format(val, meta)
+        
+    # Check if the file exists, in which case the header should be written
+    tsvfile_path = "somefile.tsv"
+    tsvfile_exists = os.path.isfile(tsvfile_path)
+       
+    print "record that will be written:"
+    print record_accumulator
+    with open(tsvfile_path, "a+") as tsvfile: # a+ means append and create if it doesn't exist.
+        if not tsvfile_exists:
+            tsvfile.write(header_accumulator)
+        tsvfile.write(record_accumulator)
+        
+    print "probably successfully printed to the output tsv file."
+        
+            
+    
 
 def usage(pipe):
     print >>pipe, \
